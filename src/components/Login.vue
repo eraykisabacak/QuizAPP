@@ -6,9 +6,11 @@
                 <v-text-field   v-model="email"
                                 :rules="emailRules"
                                 label="E-mail"
+                                prepend-icon="mdi-email"
                                 required />
                 <v-text-field
                     v-model="password"
+                    prepend-icon="mdi-account-lock"
                     :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                     :rules="[rules.required, rules.min]"
                     :type="show1 ? 'text' : 'password'"
@@ -21,7 +23,7 @@
             </v-card-text>
 
             <v-card-actions>
-                <v-btn color="success" right>Login</v-btn>
+                <v-btn color="success">Login</v-btn>
             </v-card-actions>
         </v-card>
     </v-content>                    
@@ -29,6 +31,7 @@
 
 <script>
     export default {
+       name: 'Login',
         data: () => ({
             email: '',
             emailRules: [
@@ -38,9 +41,9 @@
             show1: false,    
             password: '',
             rules: {
-            required: value => !!value || 'Required.',
-            min: v => v.length >= 6 || 'Min 6 characters',
-            emailMatch: () => (`The email and password you entered don't match`),
+                required: value => !!value || 'Required.',
+                min: v => v.length >= 6 || 'Min 6 characters',
+                emailMatch: () => (`The email and password you entered don't match`),
             },        
         })
     }
