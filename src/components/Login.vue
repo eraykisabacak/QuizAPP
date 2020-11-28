@@ -23,7 +23,7 @@
             </v-card-text>
 
             <v-card-actions>
-                <v-btn color="success">Login</v-btn>
+                <v-btn color="success" @click="login">Login</v-btn>
             </v-card-actions>
         </v-card>
     </v-content>                    
@@ -32,20 +32,28 @@
 <script>
     export default {
        name: 'Login',
-        data: () => ({
-            email: '',
-            emailRules: [
-                v => !!v || 'E-mail zorunlu alandır',
-                v => /.+@.+\..+/.test(v) || 'Lütfen Email giriniz',
-            ],
-            show1: false,    
-            password: '',
-            rules: {
-                required: value => !!value || 'Required.',
-                min: v => v.length >= 6 || 'Min 6 characters',
-                emailMatch: () => (`The email and password you entered don't match`),
-            },        
-        })
+        data() {
+            return {
+                email: '',
+                emailRules: [
+                    v => !!v || 'E-mail zorunlu alandır',
+                    v => /.+@.+\..+/.test(v) || 'Lütfen Email giriniz',
+                ],
+                show1: false,    
+                password: '',
+                rules: {
+                    required: value => !!value || 'Required.',
+                    min: v => v.length >= 6 || 'Min 6 characters',
+                    emailMatch: () => (`The email and password you entered don't match`),
+                },
+            }        
+        },
+        methods: {
+            login(){
+                let user = {email:this.email,password:this.password}
+                this.$store.dispatch("login",user);
+            }
+        }
     }
 </script>
 

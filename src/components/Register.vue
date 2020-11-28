@@ -32,7 +32,7 @@
             </v-card-text>    
 
             <v-card-actions>
-                <v-btn color="success">Register</v-btn>
+                <v-btn color="success" @click="register">Register</v-btn>
             </v-card-actions>
         </v-card>
     </v-content>                    
@@ -42,26 +42,33 @@
     export default {
        name: 'Register',
 
-        data : () => ({
-            username:'',
-            email: '',
-            emailRules: [
-                v => !!v || 'E-mail zorunlu alandır',
-                v => /.+@.+\..+/.test(v) || 'Lütfen Email giriniz',
-            ],
-            usernameRules: [
-                v => !!v || 'Username zorunlu alandır',
-                v => /^(?=[a-zA-Z0-9._]{3,20}$)(?!.*[_.]{2})[^_.].*[^_.]$/.test(v) || 'Lütfen 3 - 20 arasında karakter giriniz Ve Noktalama işaretleri ile başlamaz, bitmez'
-            ],
-            show1: false,    
-            password: '',
-            rules: {
-                required: value => !!value || 'Required.',
-                min: v => v.length >= 6 || 'Min 6 characters',
-                emailMatch: () => (`The email and password you entered don't match`),
-                emailMin: v => v.length >= 3 || 'Min 3 characters'
-            }  
-        })
+        data() {
+            return {
+                username:'',
+                email: '',
+                emailRules: [
+                    v => !!v || 'E-mail zorunlu alandır',
+                    v => /.+@.+\..+/.test(v) || 'Lütfen Email giriniz',
+                ],
+                usernameRules: [
+                    v => !!v || 'Username zorunlu alandır',
+                    v => /^(?=[a-zA-Z0-9._]{3,20}$)(?!.*[_.]{2})[^_.].*[^_.]$/.test(v) || 'Lütfen 3 - 20 arasında karakter giriniz Ve Noktalama işaretleri ile başlamaz, bitmez'
+                ],
+                show1: false,    
+                password: '',
+                rules: {
+                    required: value => !!value || 'Required.',
+                    min: v => v.length >= 6 || 'Min 6 characters',
+                    emailMatch: () => (`The email and password you entered don't match`),
+                    emailMin: v => v.length >= 3 || 'Min 3 characters'
+                }
+            }
+        },
+        methods:{
+            register(){
+                console.log("register");
+            }
+        }
     }
 </script>
 
