@@ -23,36 +23,38 @@ const store = new Vuex.Store({
     }
   },
   actions: {
-    initAuth() {
+    initAuth()
+    {
       let token = localStorage.getItem("token");
-      if (token) {
+        if (token)
+        {
         let expires = localStorage.getItem("expirationDate");
-        console.log("expires ", expires);
-        console.log("date now", Date.now);
-        if (Date.now >= +expires) {
+        if (Date.now >= +expires)
+        {
           console.log("Token Süresi geçmiştir");
           store.dispatch("logout");
         }
-        else {
+        else
+        {
           store.commit("setToken", token);
           let timerSecond = +expires - Date.now();
-          console.log(timerSecond)
           this.dispatch("setTimeoutTimer", timerSecond);
-          router.push('/');
           }
         }
       },
-      login({ commit },user) {
+      login({ commit,dispatch },user) {
         return axios.post("http://localhost:3000/api/auth/login",
           {
             email: user.email,
             password: user.password
           })
           .then(res => {
-            console.log(res);
             commit("setToken", res.data.access_token);
             localStorage.setItem("token", res.data.access_token);
             localStorage.setItem("expirationDate", Date.now() + 30000)
+
+            dispatch("setTimeoutTimer", Date.now() + 30000)
+
             router.push("/");
           })
           .catch(err => console.log(err));
@@ -68,12 +70,29 @@ const store = new Vuex.Store({
           .then(res => {
             commit("setQuiz", res.data);
           })
-    },
-      setTimeoutTimer({ dispatch }, expiresIn) {
+      },
+    setTimeoutTimer({ dispatch }, expiresIn) {
             setTimeout(() => {
                 dispatch("logout");
             },expiresIn)
-        }
+      },
+      register({ commit,dispatch },user) {
+        return axios.post("http://localhost:3000/api/auth/register",
+          {
+            email: user.email,
+            username:user.username,
+            password: user.password
+          })
+          .then(res => {
+            commit("setToken", res.data.access_token);
+            localStorage.setItem("token", res.data.access_token);
+            localStorage.setItem("expirationDate", Date.now() + 30000)
+
+            dispatch("setTimeoutTimer", Date.now() + 30000)
+            router.push("/");
+          })
+          .catch(err => console.log(err));
+      }
     },
     getters: {
       isAuthenticated(state) {

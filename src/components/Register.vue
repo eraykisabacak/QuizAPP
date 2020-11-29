@@ -67,6 +67,8 @@
         methods:{
             register(){
                 console.log("register");
+                let user = {username:this.username,email:this.email,password:this.password}
+                this.$store.dispatch("register",user);
             }
         }
     }

@@ -2,6 +2,7 @@
     <v-content>
         <v-card width="500" class="mx-auto mt-15">
             <v-card-title align="center">Login</v-card-title>
+            <h2 align="center" class="red--text text--lighten-1">My Address</h2>
             <v-card-text>
                 <v-text-field   v-model="email"
                                 :rules="emailRules"
@@ -46,6 +47,7 @@
                     min: v => v.length >= 6 || 'Min 6 characters',
                     emailMatch: () => (`The email and password you entered don't match`),
                 },
+                error:''
             }        
         },
         methods: {
