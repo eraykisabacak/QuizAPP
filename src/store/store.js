@@ -68,7 +68,8 @@ const store = new Vuex.Store({
       getAllQuiz({ commit }) {
         return axios.get("http://localhost:3000/api/quiz")
           .then(res => {
-            commit("setQuiz", res.data);
+            console.log(res.data.quizs);
+            commit("setQuiz", res.data.quizs);
           })
       },
     setTimeoutTimer({ dispatch }, expiresIn) {

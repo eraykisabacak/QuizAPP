@@ -9,25 +9,17 @@
       <v-col cols="2">
         <v-btn color="success" large v-if="isAuthenticated">Yeni Quiz</v-btn>
       </v-col>
-      <v-col cols="12" v-if="getQuiz">
+      <v-col cols="12" v-for="quiz in getQuiz" :key="quiz.id">
         <v-card class="mx-auto" color="success" dark max-width="1200">
           <v-card-title>
           </v-card-title>
 
           <v-card-text class="headline font-weight-bold">
-            "Turns out semicolon-less style is easier and safer in TS because
-            most gotcha edge cases are type invalid as well."
+            {{quiz.name}}
           </v-card-text>
 
-          <v-card-actions>
+          <v-card-actions @click="quizClick" :style="{cursor: isAuthenticated ? 'pointer' : ''}">
             <v-list-item class="grow">
-              <v-list-item-avatar color="grey darken-3">
-                <v-img
-                  class="elevation-6"
-                  alt=""
-                  src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortCurly&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=White&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Default&skinColor=Light"
-                ></v-img>
-              </v-list-item-avatar>
 
               <v-list-item-content>
                 <v-list-item-title>Evan You</v-list-item-title>
@@ -50,10 +42,24 @@ export default {
   computed:{
     ...mapGetters([
       'isAuthenticated','getQuiz'
-    ])
+    ]),
+  },
+  methods:{
+    quizClick(){
+      if(this.$store.getters.isAuthenticated){
+        console.log("true")
+      }
+      else{
+        console.log("not authenticat")
+      }
+    }
   },
   created(){
     this.$store.dispatch("getAllQuiz");
   }
 };
 </script>
+
+<style scoped>
+
+</style>
