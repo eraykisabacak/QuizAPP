@@ -2,7 +2,7 @@
     <v-content>
         <v-card width="500" class="mx-auto mt-15">
             <v-card-title align="center">Login</v-card-title>
-            <h2 align="center" class="red--text text--lighten-1">My Address</h2>
+            <h2 align="center" class="red--text text--lighten-1" v-if="error">{{error}}</h2>
             <v-card-text>
                 <v-text-field   v-model="email"
                                 :rules="emailRules"
@@ -53,7 +53,24 @@
         methods: {
             login(){
                 let user = {email:this.email,password:this.password}
-                this.$store.dispatch("login",user);
+                this.$store.dispatch("login",user)
+                .then( (res) => {
+                    if(res) {
+                        this.error = res;
+                        this.email = '';
+                        this.password = '';
+                    }
+                })
+                .catch( (err) => console.log("err",err));
+
+                
+            }
+        },
+        watch:{
+            error: function(val){
+                if(val){
+                    setTimeout(() => this.error = '', 5000)
+                }
             }
         }
     }

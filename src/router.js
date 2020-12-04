@@ -6,6 +6,7 @@ Vue.use(VueRouter);
 import Login from './components/Login.vue';
 import Register from './components/Register.vue';
 import Home from './components/Home';
+import AddQuiz from './components/AddQuiz';
 
 
 export const router = new VueRouter({
@@ -18,6 +19,10 @@ export const router = new VueRouter({
         },
         {
             path: '/register', component: Register
+        },
+        {
+            path: '/new_quiz', component: AddQuiz,
+
         }
     ],
     mode:"history"

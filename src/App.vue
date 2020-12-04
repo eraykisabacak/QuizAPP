@@ -1,18 +1,22 @@
 <template>
   <v-app>
     <Navbar/>
-    <router-view></router-view>
+    <Container>
+      <router-view></router-view>
+    </Container>
   </v-app>
 </template>
 
 <script>
 import Navbar from './components/Navbar.vue';
+import Container from './components/Container.vue';
 
 export default {
   name: 'App',
 
   components: {
-    Navbar
+    Navbar,
+    Container
   },
 
   data(){

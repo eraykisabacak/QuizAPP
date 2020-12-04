@@ -57,7 +57,7 @@ const store = new Vuex.Store({
 
             router.push("/");
           })
-          .catch(err => console.log(err));
+          .catch(err => err);
       },
       logout({ commit }) {
             commit('clearToken');
@@ -87,9 +87,9 @@ const store = new Vuex.Store({
           .then(res => {
             commit("setToken", res.data.access_token);
             localStorage.setItem("token", res.data.access_token);
-            localStorage.setItem("expirationDate", Date.now() + 30000)
+            localStorage.setItem("expirationDate", Date.now() + 3600000)
 
-            dispatch("setTimeoutTimer", Date.now() + 30000)
+            dispatch("setTimeoutTimer", Date.now() + 3600000)
             router.push("/");
           })
           .catch(err => console.log(err));

@@ -7,14 +7,14 @@
           </h2>
       </v-col>
       <v-col cols="2">
-        <v-btn color="success" large v-if="isAuthenticated">Yeni Quiz</v-btn>
+        <v-btn color="success" large v-if="isAuthenticated" @click="$router.push('new_quiz')">Yeni Quiz</v-btn>
       </v-col>
       <v-col cols="12" v-for="quiz in getQuiz" :key="quiz.id">
         <v-card class="mx-auto" color="success" dark max-width="1200">
           <v-card-title>
           </v-card-title>
 
-          <v-card-text class="headline font-weight-bold">
+          <v-card-text class="text-h4 font-weight-medium">
             {{quiz.name}}
           </v-card-text>
 
@@ -22,7 +22,8 @@
             <v-list-item class="grow">
 
               <v-list-item-content>
-                <v-list-item-title>Evan You</v-list-item-title>
+                <span class="col-md-6">{{quiz.createdUser.username}}</span>
+                <span class="col-md-6">{{quiz.questions.length}} Soru</span>
               </v-list-item-content>
             </v-list-item>
           </v-card-actions>
