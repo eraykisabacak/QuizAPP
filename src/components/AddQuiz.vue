@@ -7,7 +7,7 @@
                     md="8"
                     >
                         <v-text-field
-                            v-model="inputs.quizname"
+                            v-model="inputs.name"
                             label="Quiz Name"
                             required
                         ></v-text-field>
@@ -16,7 +16,7 @@
                             md="8" v-for="(question,q) in inputs.questions" :key="q">
                             <h3>{{q + 1}}.Soru</h3>
                         <v-text-field
-                            v-model="question.questionName"
+                            v-model="question.questionContent"
                             prepend-icon="mdi-comment-question"
                             label="Question"
                             required>
@@ -51,6 +51,9 @@
                                 <v-btn depressed color="error" @click="removeInCorrectAnswer(q,ia)" v-show="ia || ( !ia && question.incorrectAnswers.length > 1)">Yanlış Cevap Sil</v-btn> 
                             </span>
                         </v-col>
+                        <v-col class="text-right">
+                            <v-btn color="green" class="white--text" @click="submitQuiz">Submit ></v-btn>
+                        </v-col>
                     </v-col>
                 </v-row>
             </v-form>
@@ -62,9 +65,9 @@
         data: () => ({
             valid: false,
             inputs: {
-                quizname: '',
+                name: '',
                 questions: [{
-                    questionName:'',
+                    questionContent:'',
                     correctAnswers : [{
                         answer:''
                     }],
@@ -78,7 +81,7 @@
             //Question
             addQuestion () {
                 this.inputs.questions.push({
-                    questionName:'',
+                    questionContent:'',
                     correctAnswers : [{
                         answer:''
                     }],
@@ -115,6 +118,10 @@
                 this.inputs.questions[questionIndex].incorrectAnswers.splice(incorrectIndex, 1)
                 console.log(this.inputs.questions)
             },
+            submitQuiz(){
+                console.log(this.inputs.questions);
+                this.$store.dispatch("submitQuiz",[this.inputs.name,this.inputs.questions]);
+            }
         },
     }
 </script>
