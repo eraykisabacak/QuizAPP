@@ -8,6 +8,7 @@
                                 :rules="emailRules"
                                 label="E-mail"
                                 prepend-icon="mdi-email"
+                                v-on:keyup.enter="login"
                                 required />
                 <v-text-field
                     v-model="password"
@@ -20,6 +21,7 @@
                     hint="At least 6 characters"
                     counter
                     @click:append="show1 = !show1"
+                    v-on:keyup.enter="login"
                 ></v-text-field>
             </v-card-text>
 
@@ -53,6 +55,10 @@
         methods: {
             login(){
                 let user = {email:this.email,password:this.password}
+                if(user.email == '' || user.password == ''){
+                    this.error = "Lütfen Email ve Password Giriniz";
+                    return;
+                }
                 this.$store.dispatch("login",user)
                 .then( (res) => {
                     if(res) {
@@ -61,9 +67,7 @@
                         this.password = '';
                     }
                 })
-                .catch( (err) => console.log("err",err));
-
-                
+                .catch( (err) => {console.log("err",err)});                
             }
         },
         watch:{

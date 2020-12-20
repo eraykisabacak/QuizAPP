@@ -37,33 +37,40 @@ const store = new Vuex.Store({
         else
         {
           store.commit("setToken", token);
-          let timerSecond = +expires - Date.now();
+          let timerSecond = (+expires) - Date.now();
+          console.log("Timer second ", timerSecond);
           this.dispatch("setTimeoutTimer", timerSecond);
           }
         }
       },
-      login({ commit,dispatch },user) {
-        return axios.post("http://localhost:3000/api/auth/login",
+      async login({ commit,dispatch },user) {
+        return await axios.post("http://localhost:3000/api/auth/login",
           {
             email: user.email,
             password: user.password
           })
           .then(res => {
+            console.log("Login");
+            console.log(res);
             commit("setToken", res.data.access_token);
             localStorage.setItem("token", res.data.access_token);
-            localStorage.setItem("expirationDate", Date.now() + 30000)
+            localStorage.setItem("expirationDate", Date.now() + 3600000);
 
-            dispatch("setTimeoutTimer", Date.now() + 30000)
+            dispatch("setTimeoutTimer", 3600000);
 
             router.push("/");
           })
           .catch(err => err);
       },
-      logout({ commit }) {
+    logout({commit}) {
             commit('clearToken');
-            router.replace('/');
             window.localStorage.removeItem('token');
             window.localStorage.removeItem('expirationDate');
+      
+            if (router.history.current.path != '/') {
+              console.log("Çalıştı");
+              router.replace('/');
+            }
       },
       getAllQuiz({ commit }) {
         return axios.get("http://localhost:3000/api/quiz")
@@ -73,11 +80,13 @@ const store = new Vuex.Store({
           })
       },
     setTimeoutTimer({ dispatch }, expiresIn) {
-            setTimeout(() => {
-                dispatch("logout");
-            },expiresIn)
+      console.log(expiresIn);
+      setTimeout(() => {      
+          console.log("logout", expiresIn);
+          dispatch("logout");
+        },expiresIn)
       },
-      register({ commit,dispatch },user) {
+      register({ commit,dispatch},user) {
         return axios.post("http://localhost:3000/api/auth/register",
           {
             email: user.email,
@@ -87,9 +96,8 @@ const store = new Vuex.Store({
           .then(res => {
             commit("setToken", res.data.access_token);
             localStorage.setItem("token", res.data.access_token);
-            localStorage.setItem("expirationDate", Date.now() + 3600000)
-
-            dispatch("setTimeoutTimer", Date.now() + 3600000)
+            localStorage.setItem("expirationDate",Date.now() + 3600000)
+            dispatch("setTimeoutTimer", 3600000)
             router.push("/");
           })
           .catch(err => console.log(err));

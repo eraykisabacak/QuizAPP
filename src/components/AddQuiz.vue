@@ -115,8 +115,7 @@
                 this.inputs.questions[questionIndex].incorrectAnswers.splice(incorrectIndex, 1)
                 console.log(this.inputs.questions)
             },
-
-        }
+        },
     }
 </script>
 
