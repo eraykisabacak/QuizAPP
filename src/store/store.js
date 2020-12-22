@@ -47,10 +47,9 @@ const store = new Vuex.Store({
         })
         .then(res => {
           console.log("Login");
-          console.log(res);
           commit("setToken", res.data.access_token);
-          localStorage.setItem("token", res.data.access_token);
-          localStorage.setItem("expirationDate", Date.now() + 3600000);
+          localStorage.setItem("token", res.data.data.access_token); 
+          localStorage.setItem("expirationDate",Date.now() + 3600000);
 
           dispatch("setTimeoutTimer", 3600000);
 
@@ -91,9 +90,9 @@ const store = new Vuex.Store({
         })
         .then(res => {
           commit("setToken", res.data.access_token);
-          localStorage.setItem("token", res.data.access_token);
-          localStorage.setItem("expirationDate", Date.now() + 3600000)
-          dispatch("setTimeoutTimer", 3600000)
+          localStorage.setItem("token", res.data.access_token); 
+          localStorage.setItem("expirationDate", res.data.expires)
+          dispatch("setTimeoutTimer", res.data.expires)
           router.push("/");
         })
         .catch(err => console.log(err));
@@ -111,7 +110,8 @@ const store = new Vuex.Store({
         })
         .then(res => {
           console.log(res);
-        commit()
+          commit();
+          router.push("/");
         })
         .catch(err => {
           console.log(err);

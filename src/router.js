@@ -7,7 +7,7 @@ import Login from './components/Login.vue';
 import Register from './components/Register.vue';
 import Home from './components/Home';
 import AddQuiz from './components/AddQuiz';
-
+import Quiz from './components/Quiz';
 
 export const router = new VueRouter({
     routes: [
@@ -40,6 +40,19 @@ export const router = new VueRouter({
             component: AddQuiz,
             beforeEnter: (to, from, next) => {
                 if (!localStorage.getItem("token"))
+                {
+                    router.push('/');
+                    console.log(localStorage.getItem("token"))    
+                }
+                next();
+            }
+        },
+        {
+            path: '/quiz',
+            component: Quiz,
+            params:true,
+            beforeEnter: (to, from, next) => {
+                if (!localStorage.getItem("token") || to.query.quizId == undefined)
                 {
                     router.push('/');
                     console.log(localStorage.getItem("token"))    

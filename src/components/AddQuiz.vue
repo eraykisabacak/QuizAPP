@@ -51,11 +51,11 @@
                                 <v-btn depressed color="error" @click="removeInCorrectAnswer(q,ia)" v-show="ia || ( !ia && question.incorrectAnswers.length > 1)">Yanlış Cevap Sil</v-btn> 
                             </span>
                         </v-col>
-                        <v-col class="text-right">
-                            <v-btn color="green" class="white--text" @click="submitQuiz">Submit ></v-btn>
-                        </v-col>
                     </v-col>
                 </v-row>
+                <v-col class="text-right">
+                            <v-btn color="green" class="white--text" @click="submitQuiz">Quiz Kaydet ></v-btn>
+                </v-col>
             </v-form>
     </v-container>
 </template>

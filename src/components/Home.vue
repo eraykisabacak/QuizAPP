@@ -18,7 +18,7 @@
             {{quiz.name}}
           </v-card-text>
 
-          <v-card-actions @click="quizClick" :style="{cursor: isAuthenticated ? 'pointer' : ''}">
+          <v-card-actions @click="quizClick(quiz._id)" :style="{cursor: isAuthenticated ? 'pointer' : ''}">
             <v-list-item class="grow">
 
               <v-list-item-content>
@@ -46,12 +46,18 @@ export default {
     ]),
   },
   methods:{
-    quizClick(){
+    quizClick(id){
       if(this.$store.getters.isAuthenticated){
-        console.log("true")
+        if (confirm('Sınava gireceğinizden emin misiniz?')) {
+          console.log('Sınava girdi ' + id);
+          this.$router.push({path: 'quiz', query: { quizId: id } });
+        } else {
+          // Do nothing!
+          console.log('Sınava girmekten vazgeçti');
+        }
       }
       else{
-        console.log("not authenticat")
+        alert("Lütfen Giriş Yapınız");
       }
     }
   },
