@@ -3,34 +3,79 @@
      <v-icon
       large
       class="before-question"
+      :style="this.selectedQuestion == 0 ? 'display:none': ''"
+      @click="beforeQuestion"
     >
       mdi-chevron-left-circle-outline 
     </v-icon>
      <v-icon
       large
       class="after-question"
+      :style="this.selectedQuestion == (this.questions.length-1) ? 'display:none': ''"
+      @click="afterQuestion"
     >
       mdi-chevron-right-circle-outline
     </v-icon>
     <div class="header">
         <div class="questionAmount">
-            Question <span>13</span>/<span class="totalAmount">20</span>
+            Question <span>{{this.selectedQuestion + 1}}</span>/<span class="totalAmount">20</span>
         </div>
-        <p class="question">How many students in your class from korea ?</p>
+        <p class="question">{{this.questions[this.selectedQuestion].questionContent}}</p>
     </div>
 
     <div class="answers">
-        <input type="radio" class="radio-button" id="ans1" name="answer"/> 
-        <label for="ans1" class="answer">Cevap 1</label>
-
-        <input type="radio" class="radio-button" id="ans2"  name="answer"/>
-        <label for="ans2" class="answer">Cevap 2</label>
+        <div  v-for="item in this.answers[this.selectedQuestion]" :key="item._id">
+            <input type="radio" class="radio-button" :id="item._id" name="answer"/> 
+            <label :for="item._id" class="answer">{{item.answer}}</label>
+        </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
+    
+    data(){
+        return {
+            questions:[],
+            answers:[],
+            selectedQuestion:0,
+        }
+    },
+    created(){
+        let vm = this;
+        console.log(this.$route.query.quizId);
+
+        axios.get('http://localhost:3000/api/quiz/' + this.$route.query.quizId).then(res => {
+            this.questions = res.data.quiz.questions;
+            for(var j = 0 ; j < this.questions.length;j++){
+                vm.answers.push([]);
+            }
+            for(var i = 0 ; i < this.questions.length ; i++){
+                res.data.quiz.questions[i].correctAnswers.forEach(function(item){ 
+                    vm.answers[i].push(item); 
+                });
+                
+                res.data.quiz.questions[i].incorrectAnswers.forEach(function(item){         
+                    vm.answers[i].push(item);
+                });    
+            }
+            console.log(this.questions);
+            console.log(this.answers);
+        }).catch(err => console.log(err));
+    },
+    methods:{
+        afterQuestion(){
+            let vm = this;
+            vm.selectedQuestion += 1;
+        },
+        beforeQuestion(){
+            let vm = this;
+            vm.selectedQuestion -= 1;
+        }
+    }
 }
 </script>
 
