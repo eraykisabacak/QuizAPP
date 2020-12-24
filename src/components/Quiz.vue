@@ -18,16 +18,20 @@
     </v-icon>
     <div class="header">
         <div class="questionAmount">
-            Question <span>{{this.selectedQuestion + 1}}</span>/<span class="totalAmount">20</span>
+            Question <span>{{this.selectedQuestion + 1}}</span>/<span class="totalAmount">{{this.questions.length}}</span>
         </div>
         <p class="question">{{this.questions[this.selectedQuestion].questionContent}}</p>
     </div>
 
     <div class="answers">
-        <div  v-for="item in this.answers[this.selectedQuestion]" :key="item._id">
-            <input type="radio" class="radio-button" :id="item._id" name="answer"/> 
+        <div  v-for="(item) in this.answers[this.selectedQuestion]" :key="item._id">
+            <input type="radio" v-model="item.id" class="radio-button" :id="item._id" name="answer" @click="userAnswerClick(item)" /> 
             <label :for="item._id" class="answer">{{item.answer}}</label>
         </div>
+    </div>
+
+    <div>
+        <span class="endQuiz" :style="userAnswers.length < 1 ? 'display:none' : '' " @click="endQuiz">Sınavı Bitir</span>
     </div>
   </div>
 </template>
@@ -42,6 +46,7 @@ export default {
             questions:[],
             answers:[],
             selectedQuestion:0,
+            userAnswers:[]
         }
     },
     created(){
@@ -62,8 +67,18 @@ export default {
                     vm.answers[i].push(item);
                 });    
             }
-            console.log(this.questions);
-            console.log(this.answers);
+
+            // Answer Mixing
+            for(i = 0 ; i < this.answers.length;i++){
+                for(j = 0 ; j < this.answers[i].length;j++){ 
+                    var random = Math.floor(Math.random() * this.answers[i].length);
+                    var random2 = Math.floor(Math.random() * this.answers[i].length);
+
+                    var cache = this.answers[i][random];
+                    this.answers[i][random] = this.answers[i][random2];
+                    this.answers[i][random2] = cache;          
+                }
+            }
         }).catch(err => console.log(err));
     },
     methods:{
@@ -74,6 +89,45 @@ export default {
         beforeQuestion(){
             let vm = this;
             vm.selectedQuestion -= 1;
+        },
+        userAnswerClick(item){
+            let questionId = this.questions[this.selectedQuestion]._id;
+            //let answerId = item._id;
+            if(this.userAnswers.length > 0){
+                let status = 1 ;
+                for(var i = 0 ; i < this.userAnswers.length;i++){
+                    if (questionId in this.userAnswers[i]){
+                       // Varsa değiştir
+                       status = 0;
+                       console.log("var")
+                       console.log( this.userAnswers);
+                       this.userAnswers[i][questionId] = item;
+                       console.log( this.userAnswers);
+                    }
+                }
+                if(status){
+                    // Dizide yoksa ekle
+                    console.log("yok");
+                    let answer = {};
+                    answer[questionId] = item;
+                    console.log(answer);
+                    this.userAnswers.push(answer);
+                }
+            }
+            else{
+                let answer = {};
+                answer[questionId] = item;
+                console.log(answer);
+                this.userAnswers.push(answer);
+            }
+        },
+        endQuiz(){
+            if(confirm("Sınavı bitirmek istiyor musunuz?")){
+                this.$store.dispatch("submitEndQuiz",[this.$route.query.quizId,this.userAnswers]);
+                //this.$router.push({path: '', query: { userAnswers: this.userAnswers } });
+            }else{
+                console.log('Sınava girmekten vazgeçti');
+            }
         }
     }
 }
@@ -170,5 +224,20 @@ export default {
 }
 .totalAmount{
     margin-left:4px;
+}
+.endQuiz{
+    font-size: 20px;
+    font-weight: 650;
+    display: block;
+    margin-top: 55px;
+    text-align: center;
+    border-bottom: 1px solid;
+    border-radius: 25px;
+    transition: all .2s ease-in-out
+}
+.endQuiz:hover{
+    border-bottom: 2px solid blueviolet;
+    color:blueviolet;
+    transform: scale(1.05);
 }
 </style>

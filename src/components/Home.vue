@@ -52,7 +52,6 @@ export default {
           console.log('Sınava girdi ' + id);
           this.$router.push({path: 'quiz', query: { quizId: id } });
         } else {
-          // Do nothing!
           console.log('Sınava girmekten vazgeçti');
         }
       }

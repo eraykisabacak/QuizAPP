@@ -116,6 +116,21 @@ const store = new Vuex.Store({
         .catch(err => {
           console.log(err);
         });
+    },
+    async submitEndQuiz({commit} ,[ quizId, userAnswers ]) {
+      console.log(quizId, userAnswers);
+      await axios.post('http://localhost:3000/api/quiz/userAnswer/' + quizId,{userAnswers},{
+          headers: {
+            'Authorization': 'Bearer: ' + this.state.token
+          }
+        })
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.err(err);
+        });
+      commit();
     }
   },
   getters: {
