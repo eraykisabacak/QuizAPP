@@ -1,52 +1,70 @@
 <template>
   <div class="main">
-     <v-icon
-      large
-      class="before-question"
-      :style="this.selectedQuestion == 0 ? 'display:none': ''"
-      @click="beforeQuestion"
-    >
-      mdi-chevron-left-circle-outline 
-    </v-icon>
-     <v-icon
-      large
-      class="after-question"
-      :style="this.selectedQuestion == (this.questions.length-1) ? 'display:none': ''"
-      @click="afterQuestion"
-    >
-      mdi-chevron-right-circle-outline
-    </v-icon>
-    <div class="header">
-        <div class="questionAmount">
-            Question <span>{{this.selectedQuestion + 1}}</span>/<span class="totalAmount">{{this.questions.length}}</span>
+      <div v-if="questions.length > 0">
+        <v-icon
+        large
+        class="before-question"
+        :style="this.selectedQuestion == 0 ? 'display:none': ''"
+        @click="beforeQuestion"
+        >
+        mdi-chevron-left-circle-outline 
+        </v-icon>
+        <v-icon
+        large
+        class="after-question"
+        :style="this.selectedQuestion == (this.questions.length-1) ? 'display:none': ''"
+        @click="afterQuestion"
+        >
+        mdi-chevron-right-circle-outline
+        </v-icon>
+        <div class="header">
+            <div class="questionAmount">
+                Question <span>{{this.selectedQuestion + 1}}</span>/<span class="totalAmount">{{this.questions.length}}</span>
+            </div>
+            <p class="question">{{this.questions[this.selectedQuestion].questionContent}}</p>
         </div>
-        <p class="question">{{this.questions[this.selectedQuestion].questionContent}}</p>
+
+        <div class="answers">
+            <div  v-for="(item) in this.answers[this.selectedQuestion]" :key="item._id">
+                <input type="radio" v-model="item.id" class="radio-button" :id="item._id" name="answer" @click="userAnswerClick(item)" /> 
+                <label :for="item._id" class="answer">{{item.answer}}</label>
+            </div>
+        </div>
+
+        <div>
+            <span class="endQuiz" :style="userAnswers.length < 1 ? 'display:none' : '' " @click="endQuiz">Sınavı Bitir</span>
+        </div>
+    </div>
+    <div v-else>
+        <h3 style="margin-bottom:15px">Doğru ve Yanlış Cevaplar</h3>
+        <div v-for="item in questionAndAnswer" :key="item.questionId._id">
+            <v-alert :type="item.color" >
+               {{item.questionId.questionContent}}
+            </v-alert>
+        </div>
     </div>
 
-    <div class="answers">
-        <div  v-for="(item) in this.answers[this.selectedQuestion]" :key="item._id">
-            <input type="radio" v-model="item.id" class="radio-button" :id="item._id" name="answer" @click="userAnswerClick(item)" /> 
-            <label :for="item._id" class="answer">{{item.answer}}</label>
-        </div>
-    </div>
-
-    <div>
-        <span class="endQuiz" :style="userAnswers.length < 1 ? 'display:none' : '' " @click="endQuiz">Sınavı Bitir</span>
-    </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import { mapGetters } from 'vuex'
 
 export default {
-    
+    computed: {
+        ...mapGetters([
+            'getToken',
+        ])
+    },
     data(){
         return {
             questions:[],
             answers:[],
             selectedQuestion:0,
-            userAnswers:[]
+            userAnswers:[],
+            question:true,
+            questionAndAnswer: []
         }
     },
     created(){
@@ -121,10 +139,27 @@ export default {
                 this.userAnswers.push(answer);
             }
         },
-        endQuiz(){
+        async endQuiz(){
             if(confirm("Sınavı bitirmek istiyor musunuz?")){
-                this.$store.dispatch("submitEndQuiz",[this.$route.query.quizId,this.userAnswers]);
-                //this.$router.push({path: '', query: { userAnswers: this.userAnswers } });
+                let request = {};
+                request["userAnswers"] = this.userAnswers;
+                console.log(request);
+                await axios.post('http://localhost:3000/api/quiz/userAnswer/' + this.$route.query.quizId,{userAnswers:this.userAnswers},{
+                    headers: {
+                        'Authorization': 'Bearer: ' + this.getToken
+                    }
+                    })
+                    .then(res => {
+                        console.log(res);
+                        if(res.data.success){
+                            this.questionAndAnswer = res.data.questionAndAnswer;
+                            console.log(res.data.questionAndAnswer);
+                            this.question = false;
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
             }else{
                 console.log('Sınava girmekten vazgeçti');
             }
@@ -239,5 +274,8 @@ export default {
     border-bottom: 2px solid blueviolet;
     color:blueviolet;
     transform: scale(1.05);
+    -webkit-box-shadow: rgba(138, 43, 226, .6) 0px 0 15px;
+    -moz-box-shadow: rgba(138, 43, 226, .6) 0 0 15px;
+    box-shadow: rgb(138, 43, 226, .6) 0 0 15px;
 }
 </style>
