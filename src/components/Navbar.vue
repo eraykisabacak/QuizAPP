@@ -13,8 +13,9 @@
               </v-btn>
               <v-btn color="teal darken-1" class="white--text" @click.prevent="logout" v-else>
                 Logout
-              </v-btn>
-            </v-toolbar>
+              </v-btn>  
+              <NavProfile v-if="isAuthenticated"></NavProfile>
+            </v-toolbar>  
           </v-row>
         </v-container>
     </v-app-bar>
@@ -22,10 +23,14 @@
 </template>
 
 <script>
+import NavProfile from './NavProfile'; 
 import {mapGetters} from 'vuex';
 
     export default {
        name: 'Navbar',
+       components: {
+          NavProfile,
+        },
         data: () => ({
             dialog: false,
         }),

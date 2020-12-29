@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-      <div v-if="questions.length > 0">
+      <div v-if="questions.length > 0 & question">
         <v-icon
         large
         class="before-question"
@@ -35,15 +35,28 @@
             <span class="endQuiz" :style="userAnswers.length < 1 ? 'display:none' : '' " @click="endQuiz">Sınavı Bitir</span>
         </div>
     </div>
-    <div v-else>
+    <div v-else-if="!question">
         <h3 style="margin-bottom:15px">Doğru ve Yanlış Cevaplar</h3>
         <div v-for="item in questionAndAnswer" :key="item.questionId._id">
             <v-alert :type="item.color" >
                {{item.questionId.questionContent}}
             </v-alert>
         </div>
+        
+        <v-container class="grey lighten-5">
+            <v-row
+            :class="mb-3"
+            no-gutters
+            >
+                <v-col>
+                    Doğru Sayısı : <span style="color:green; font-size:22px; font-weight:500">{{correctAnswerCount}}</span>   
+                </v-col>
+                <v-col>
+                    Yanlış Sayısı : <span style="color:red;font-size:22px; font-weight:500">{{incorrectAnswerCount}}</span>
+                </v-col>
+            </v-row>
+        </v-container>
     </div>
-
   </div>
 </template>
 
@@ -64,7 +77,9 @@ export default {
             selectedQuestion:0,
             userAnswers:[],
             question:true,
-            questionAndAnswer: []
+            questionAndAnswer: [],
+            correctAnswerCount:0,
+            incorrectAnswerCount:0
         }
     },
     created(){
@@ -155,6 +170,8 @@ export default {
                             this.questionAndAnswer = res.data.questionAndAnswer;
                             console.log(res.data.questionAndAnswer);
                             this.question = false;
+                            this.correctAnswerCount = res.data.correctCount;
+                            this.incorrectAnswerCount = res.data.incorrectCount;
                         }
                     })
                     .catch(err => {
