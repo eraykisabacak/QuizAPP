@@ -1,21 +1,11 @@
 <template>
-  <v-container class="justify-center text-center" align="center">
-            <v-form>
+    <div>
+         <h4 style="margin-left:15px">Soru Ekleme Alanı</h4>
+                <v-form>
                 <v-row style="align-items: center;justify-content: center;">
-                    <v-col
-                    cols="8"
-                    md="8"
-                    >
-                        <v-text-field
-                            v-model="inputs.name"
-                            label="Quiz Name"
-                            :rules="[v => !!v || 'Item is required']"
-                            required
-                        ></v-text-field>
-                    </v-col>
                     <v-col cols="8"
                             md="8" v-for="(question,q) in inputs.questions" :key="q">
-                            <h3>{{q + 1}}.Soru</h3>
+                            <h3>Yeni Soru</h3>
                         <v-text-field
                             v-model="question.questionContent"
                             prepend-icon="mdi-comment-question"
@@ -58,47 +48,65 @@
                     </v-col>
                 </v-row>
                 <v-col class="text-right">
-                        <v-btn color="green" class="white--text" :disabled="buttonDisabled" @click="submitQuiz">Quiz Kaydet ></v-btn>
+                        <v-btn color="green" class="white--text" :disabled="buttonDisabledNewQuestion" @click="newQuizQuestion(id)">Quiz Kaydet ></v-btn>
                 </v-col>
-            </v-form>
-    </v-container>
+                </v-form>
+    </div>
 </template>
 
 <script>
-    export default {
-        data: () => ({
-            valid: false,
-            inputs: {
-                name: '',
-                questions: [{
-                    questionContent:'',
-                    correctAnswers : [{
-                        answer:''
-                    }],
-                    incorrectAnswers : [{
-                        answer: ''
-                    }]
-                }]
-            }
-        }),
-        methods:{
-            //Question
-            addQuestion () {
-                this.inputs.questions.push({
-                    questionContent:'',
-                    correctAnswers : [{
-                        answer:''
-                    }],
-                    incorrectAnswers : [{
-                        answer: ''
-                    }]
-                })
-                console.log(this.inputs)
-            },
-            removeQuestion (index) {
-                this.inputs.questions.splice(index, 1)
-            },
+import axios from 'axios'
+import { mapGetters } from 'vuex'
 
+    export default {
+        props:['id'],
+        data(){
+            return {
+                inputs: {
+                    name: '',
+                    questions: [{
+                        questionContent:'',
+                        correctAnswers : [{
+                            answer:''
+                        }],
+                        incorrectAnswers : [{
+                            answer: ''
+                        }]
+                    }]
+                }
+            }
+        },
+        computed:{
+            ...mapGetters([
+                'getToken',
+            ]),
+            buttonDisabledNewQuestion(){
+                if(this.inputs.questions[0].questionContent == ''){
+                    return true;    
+                }
+                else{
+                    let res = false;
+                    this.inputs.questions.forEach( object => {
+                        if(object.questionContent == ''){
+                            res = true;
+                        }
+                        object.correctAnswers.forEach( correctObject => {
+                            if(correctObject.answer == ''){
+                                res = true;
+                            }
+                        });
+
+                        object.incorrectAnswers.forEach( incorrectObject => {
+                            if(incorrectObject.answer == ''){
+                                res = true;
+                            }
+                        })  
+                    });
+                    return res;
+                }
+            }
+        },
+        methods:{
             // Correct Answer
             addCorrectAnswer(index){
                 this.inputs.questions[index].correctAnswers.push({
@@ -122,38 +130,35 @@
                 this.inputs.questions[questionIndex].incorrectAnswers.splice(incorrectIndex, 1)
                 console.log(this.inputs.questions)
             },
-            submitQuiz(){
-                console.log(this.inputs.questions);
-                this.$store.dispatch("submitQuiz",[this.inputs.name,this.inputs.questions]);
+            newQuizQuestion(id){
+                axios.post('http://localhost:3000/api/question/' + id,
+                {
+                    questionContent: this.inputs.questions[0].questionContent,
+                    correctAnswers:this.inputs.questions[0].correctAnswers,
+                    incorrectAnswers:this.inputs.questions[0].incorrectAnswers
+                }
+                ,{
+                    headers: {
+                        'Authorization': 'Bearer: ' + this.getToken
+                    }
+                })
+                .then( () => {
+                    alert("Question Kayıt Edildi");
+                    this.inputs = { 
+                                    name: '',
+                                    questions: [{
+                                        questionContent:'',
+                                        correctAnswers : [{
+                                            answer:''
+                                        }],
+                                        incorrectAnswers : [{
+                                            answer: ''
+                                        }]
+                                    }]
+                                };
+                })
+                .catch(err => console.log(err))
             },
-        },
-        computed:{
-            buttonDisabled(){ 
-                if(this.inputs.name == ''){
-                    return true;    
-                }
-                else{
-                    let res = false;
-                    this.inputs.questions.forEach( object => {
-                        if(object.questionContent == ''){
-                            res = true;
-                        }
-                        object.correctAnswers.forEach( correctObject => {
-                            if(correctObject.answer == ''){
-                                res = true;
-                            }
-                        });
-
-                        object.incorrectAnswers.forEach( incorrectObject => {
-                            if(incorrectObject.answer == ''){
-                                res = true;
-                            }
-                        })  
-                    });
-                    return res;
-                }
-                
-            }
         }
     }
 </script>

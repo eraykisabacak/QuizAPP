@@ -5,7 +5,7 @@
     <v-row justify="center">
       <v-menu
         bottom
-        max-width="150px"
+        max-width="220px"
         rounded
         offset-y
       >
@@ -26,19 +26,15 @@
         <v-card>
           <v-list-item-content class="justify-center">
             <div class="mx-auto text-center">
-              <v-avatar
-                color="brown"
-              >
-                <span class="white--text headline">{{ user.initials }}</span>
-              </v-avatar>
               <h3 class="mt-3">{{ user.username }}</h3>
               <v-divider class="my-3"></v-divider>
               <v-btn
                 depressed
                 rounded
                 text
+                @click.prevent="$router.push('/profile')"
               >
-                Edit Account
+                Soru & Cevapladıklarım
               </v-btn>
               <v-divider class="my-3"></v-divider>
               <v-btn
@@ -64,7 +60,7 @@ import { mapGetters } from 'vuex'
   export default {
     data: () => ({
       user: {
-        initials: 'JD',
+        initials: '',
         username: '',
       },
     }),
