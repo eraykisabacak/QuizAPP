@@ -53,6 +53,7 @@
                     rounded
                     text
                     color="blue lighten-1"
+                    @click="openDeleteAnswer(index)"
                 >
                     Cevap Sil 
                 </v-btn>
@@ -61,6 +62,7 @@
                     rounded
                     text
                     color="blue lighten-1"
+                    @click="openUpdateAnswer(index)"
                 >
                     Cevap Güncelle
                 </v-btn>
@@ -168,6 +170,79 @@
                     </div>
                 </div>  
             </div> 
+
+            <!-- Delete Answer -->
+            <div v-if="deleteAnswerShow == index" style="margin-left:15px;margin-bottom:15px">
+                <h4 style="margin-bottom:15px">Lütfen Cevabını Silmek İstediğiniz Soruya Tıklayınız</h4>
+                <div v-for="(addAnswerItem,index) in item.questions" :key="addAnswerItem._id" style="margin-top:10px">
+                    <span style="font-weight:bold">Soru: </span> {{ addAnswerItem.questionContent }}
+                    <v-spacer></v-spacer> 
+                    <v-btn color="success" @click="clickAddAnswerShow(index)">
+                        Cevap Seç
+                    </v-btn>
+                    <div v-if="addAnswerShowComp == index" style="margin-top:15px">
+                            <h4>İstediğiniz Cevabı Silebilirsiniz</h4>
+                            <v-form>  
+                                <v-col cols="12"
+                                    md="12" v-for="(correctAnswer,ca) in addAnswerItem.correctAnswers" :key="ca+1000">
+                                <v-btn color="success" @click="deleteAnswer(correctAnswer._id)">
+                                    Doğru Cevap - {{correctAnswer.answer}}
+                                </v-btn>
+                            </v-col>
+                            <v-col cols="12" 
+                                    md="12" v-for="(incorrectAnswer,ia) in addAnswerItem.incorrectAnswers" :key="ia + 10000">
+                                <v-btn color="warning" @click="deleteAnswer(incorrectAnswer._id)">
+                                    Yanlış Cevap - {{incorrectAnswer.answer}}
+                                </v-btn>
+                            </v-col>
+                        </v-form>
+                    </div>
+                </div> 
+            </div>
+
+            <!-- Update Answer -->
+            <div v-if="updateAnswerShow == index" style="margin-left:15px;margin-bottom:15px">
+                <h4 style="margin-bottom:15px">Lütfen Cevabını Güncellemek İstediğiniz Soruya Tıklayınız</h4>
+                <div v-for="(addAnswerItem,index) in item.questions" :key="addAnswerItem._id" style="margin-top:10px">
+                    <span style="font-weight:bold">Soru: </span> {{ addAnswerItem.questionContent }}
+                    <v-spacer></v-spacer> 
+                    <v-btn color="success" @click="clickUpdateAnswerShow(index)">
+                        Cevap Seç
+                    </v-btn>
+                    <div v-if="updateAnswerShowComp == index" style="margin-top:15px">
+                            <h4>İstediğiniz Cevabı Düzenleyebilirsiniz</h4>
+                            <v-form>  
+                                <v-col cols="12"
+                                    md="12" v-for="(correctAnswer,ca) in addAnswerItem.correctAnswers" :key="ca+1000">
+                                <v-btn color="success" @click="updateAnswerTextShow(index,correctAnswer.answer,correctAnswer._id)">
+                                    Doğru Cevap - {{correctAnswer.answer}}
+                                </v-btn>
+                            </v-col>
+                            <v-col cols="12" 
+                                    md="12" v-for="(incorrectAnswer,ia) in addAnswerItem.incorrectAnswers" :key="ia + 10000">
+                                <v-btn color="warning" @click="updateAnswerTextShow(index,incorrectAnswer.answer,incorrectAnswer._id)">
+                                    Yanlış Cevap - {{incorrectAnswer.answer}}
+                                </v-btn>
+                            </v-col>
+                        </v-form>
+                        <div v-if="updateAnswerShowTextComp == index">
+                            <h4>Güncelleme</h4>
+                            <v-form>  
+                                <v-col cols="12" md="12">
+                                    <v-text-field 
+                                                v-model="updateAnswerContent"
+                                                :rules="[v => !!v || 'Item is required']"
+                                                required>
+                                    </v-text-field>
+                                </v-col>
+                                <v-col class="text-right" cols="12" md="12">
+                                    <v-btn color="green" class="white--text" :disabled="buttonDisabledUpdateAnswer" @click="updateAnswer()" >Cevabı Güncelle</v-btn>
+                                </v-col>
+                            </v-form>
+                        </div>
+                    </div>
+                </div> 
+            </div>
         </v-card>
         <h3 style="margin-top:25px" v-if="myAnsweredQuiz.length > 0">Cevapladığınız Quizler</h3>
         <v-card
@@ -179,7 +254,7 @@
             :key="item.id"
         >
             <v-card-title>{{item.userAnsweredQuiz.name}}</v-card-title>
-            <v-card-text>Doğru Sayısı : <span color="green darken-31">{{item.correctCount}}</span> Yanlış Sayısı : <span color="red darken-31">{{item.incorrectCount}}</span></v-card-text>
+            <v-card-text>Doğru Sayısı : <span color="green darken-31">{{item.correctCount}}</span> Yanlış Sayısı : <span color="red darken-31">{{!item.incorrectCount ? 0 : item.incorrectCount}}</span></v-card-text>
             <v-card-actions>
             </v-card-actions>
         </v-card>
@@ -202,10 +277,16 @@ import ProfileAddQuestion from './ProfileAddQuestion.vue'
                 updateQuestionShow:-1,
                 updateQuestionContent:'',
                 updateQuestionShowComp:-1,
+                deleteAnswerShow:-1,
+                deleteAnswerShowComp:-1,
+                updateAnswerShow:-1,
+                updateAnswerShowComp:-1,
                 addAnswerShow:-1,
                 addAnswerShowComp:-1,
                 correctAnswers : [],
-                incorrectAnswers : []
+                incorrectAnswers : [],
+                updateAnswerShowTextComp : -1,
+                updateAnswerContent:''
             }
         },
         computed: {
@@ -240,7 +321,13 @@ import ProfileAddQuestion from './ProfileAddQuestion.vue'
                     })
                 }
                 return status;
-            } 
+            },
+            buttonDisabledUpdateAnswer(){
+                if(this.updateAnswer == ''){
+                    return true;
+                }
+                return false;
+            }
         },
         created(){
             this.getMyQuiz();
@@ -284,17 +371,46 @@ import ProfileAddQuestion from './ProfileAddQuestion.vue'
                     .catch(err => console.log(err));
                 }
             }, 
+            defaultReturnState(){
+                this.addQuestionShow = -1;
+                this.deleteQuestionShow = -1;
+                this.updateQuestionShow = -1;
+                this.updateQuestionShowComp =-1;
+                this.addAnswerShow = -1;
+                this.addAnswerShowComp = -1;
+                this.deleteAnswerShow = -1;
+                this.deleteAnswerShowComp = -1;
+                this.updateAnswerShow = -1;
+                this.updateAnswerShowComp = -1;
+            },
             openAddQuestion(index){
+                this.defaultReturnState();
                 this.addQuestionShow = index;
             },
             openDeleteQuestion(index){
+                this.defaultReturnState();
                 this.deleteQuestionShow = index;
             },
             openUpdateQuestion(index){
+                this.defaultReturnState();
                 this.updateQuestionShow = index;
             },
             openAddAnswer(index){
+                this.defaultReturnState();
                 this.addAnswerShow = index;
+            },
+            openDeleteAnswer(index){
+                this.defaultReturnState();
+                this.deleteAnswerShow = index;
+            },
+            openUpdateAnswer(index){
+                this.defaultReturnState();
+                this.updateAnswerShow = index;
+            },
+            updateAnswerTextShow(index,answer,id){
+                this.updateAnswerShowTextComp = index;
+                this.updateAnswerContent = answer;
+                this.updateAnswerId = id;
             },
             deleteQuestion(id){
                 if(confirm("Soruyu silmek istiyor musunuz")){
@@ -310,12 +426,51 @@ import ProfileAddQuestion from './ProfileAddQuestion.vue'
                     .catch(err => console.log(err));
                 }
             },
+            deleteAnswer(id){
+                if(confirm("Cevabı silmek istiyor musunuz")){
+                    axios.delete('http://localhost:3000/api/answer/' + id
+                    ,{
+                        headers: {
+                            'Authorization': 'Bearer: ' + this.getToken
+                        }
+                    })
+                    .then(() => {
+                        alert("Cevap Silindi");
+                        this.getMyQuiz();
+                    })
+                    .catch(err => console.log(err));
+                }
+            },
+            updateAnswer(){
+                if(confirm("Cevabı güncellemek istiyor musunuz")){
+                    axios.put('http://localhost:3000/api/answer/' + this.updateAnswerId,
+                    {
+                        answer: this.updateAnswerContent
+                    }
+                    ,{
+                        headers: {
+                            'Authorization': 'Bearer: ' + this.getToken
+                        }
+                    })
+                    .then(() => {
+                        alert("Cevap Güncellendi");
+                        this.getMyQuiz();
+                    })
+                    .catch(err => console.log(err));
+                }
+            },
             clickUpdateQuestionShow(id,questionContent){
                 this.updateQuestionShowComp = id;
                 this.updateQuestionContent = questionContent;
             },
             clickAddAnswerShow(id){
                 this.addAnswerShowComp = id;
+            },
+            clickDeleteAnswerShow(id){
+                this.deleteAnswerShowComp = id;
+            },
+            clickUpdateAnswerShow(id){
+                this.updateAnswerShowComp = id;
             },
             updateQuestion(id){
                 if(confirm("Soruyu güncellemek istiyor musunuz")){
