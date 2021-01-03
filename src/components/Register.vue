@@ -52,7 +52,7 @@
                 ],
                 usernameRules: [
                     v => !!v || 'Username zorunlu alandır',
-                    v => /^(?=[a-zA-Z0-9._]{3,20}$)(?!.*[_.]{2})[^_.].*[^_.]$/.test(v) || 'Lütfen 3 - 20 arasında karakter giriniz Ve Noktalama işaretleri ile başlamaz, bitmez'
+                    v => /^(?=[a-zA-Z0-9._]{4,20}$)(?!.*[_.]{2})[^_.].*[^_.]$/.test(v) || 'Lütfen 4 - 20 arasında karakter giriniz Ve Noktalama işaretleri ile başlamaz, bitmez'
                 ],
                 show1: false,    
                 password: '',

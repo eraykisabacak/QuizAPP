@@ -91,8 +91,8 @@ const store = new Vuex.Store({
         .then(res => {
           commit("setToken", res.data.access_token);
           localStorage.setItem("token", res.data.access_token); 
-          localStorage.setItem("expirationDate", res.data.expires)
-          dispatch("setTimeoutTimer", res.data.expires)
+          localStorage.setItem("expirationDate",Date.now() + 3600000);
+          dispatch("setTimeoutTimer", 3600000)
           router.push("/");
         })
         .catch(err => console.log(err));
