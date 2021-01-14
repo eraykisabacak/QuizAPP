@@ -10,9 +10,6 @@
               </v-btn>
               <v-btn to="/login" color="teal darken-1" class="white--text" v-if="!isAuthenticated">
                 Login
-              </v-btn>
-              <v-btn color="teal darken-1" class="white--text" @click.prevent="logout" v-else>
-                Logout
               </v-btn>  
               <NavProfile v-if="isAuthenticated"></NavProfile>
             </v-toolbar>  
