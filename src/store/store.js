@@ -110,8 +110,8 @@ const store = new Vuex.Store({
         })
         .then(res => {
           console.log(res);
-          commit();
           router.push("/");
+          commit();
         })
         .catch(err => {
           console.log(err);

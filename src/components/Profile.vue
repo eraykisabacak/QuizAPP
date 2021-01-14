@@ -367,6 +367,7 @@ import ProfileAddQuestion from './ProfileAddQuestion.vue'
                     })
                     .then(() => {
                         this.getMyQuiz();
+                        this.getMyAnsweredQuiz();
                     })
                     .catch(err => console.log(err));
                 }
