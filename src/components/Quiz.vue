@@ -86,7 +86,7 @@ export default {
         let vm = this;
         console.log(this.$route.query.quizId);
 
-        axios.get('http://localhost:3000/api/quiz/' + this.$route.query.quizId).then(res => {
+        axios.get(process.env.VUE_APP_ROOT_URL + '/api/quiz/' + this.$route.query.quizId).then(res => {
             this.questions = res.data.quiz.questions;
             for(var j = 0 ; j < this.questions.length;j++){
                 vm.answers.push([]);
@@ -159,7 +159,7 @@ export default {
                 let request = {};
                 request["userAnswers"] = this.userAnswers;
                 console.log(request);
-                await axios.post('http://localhost:3000/api/quiz/userAnswer/' + this.$route.query.quizId,{userAnswers:this.userAnswers},{
+                await axios.post(process.env.VUE_APP_ROOT_URL + '/api/quiz/userAnswer/' + this.$route.query.quizId,{userAnswers:this.userAnswers},{
                     headers: {
                         'Authorization': 'Bearer: ' + this.getToken
                     }

@@ -74,7 +74,7 @@ import { mapGetters } from 'vuex'
     },
     methods:{
         getUser(){
-                axios.get('http://localhost:3000/api/auth/user'
+                axios.get(process.env.VUE_APP_ROOT_URL + '/api/auth/user'
                 ,{
                     headers: {
                         'Authorization': 'Bearer: ' + this.getToken

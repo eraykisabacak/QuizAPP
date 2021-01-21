@@ -49,7 +49,7 @@ export default {
   methods:{
     quizClick(id){
       if(this.$store.getters.isAuthenticated){
-        axios.get('http://localhost:3000/api/quiz/userAnswer/' + id,
+        axios.get(process.env.VUE_APP_ROOT_URL + '/api/quiz/userAnswer/' + id,
         {
           headers: {
             'Authorization': 'Bearer: ' + this.getToken

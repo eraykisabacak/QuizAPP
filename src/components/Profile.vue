@@ -419,7 +419,7 @@ import { mapGetters } from 'vuex'
         },
         methods:{
             getMyQuiz(){
-                axios.get('http://localhost:3000/api/quiz/myQuiz'
+                axios.get( process.env.VUE_APP_ROOT_URL + '/api/quiz/myQuiz'
                 ,{
                     headers: {
                         'Authorization': 'Bearer: ' + this.getToken
@@ -430,7 +430,7 @@ import { mapGetters } from 'vuex'
                 })
             },
             getMyAnsweredQuiz(){
-                axios.get('http://localhost:3000/api/quiz/myAnsweredQuiz'
+                axios.get(process.env.VUE_APP_ROOT_URL + '/api/quiz/myAnsweredQuiz'
                 ,{
                     headers: {
                         'Authorization': 'Bearer: ' + this.getToken
@@ -443,7 +443,7 @@ import { mapGetters } from 'vuex'
             },
             deleteQuiz(id){
                 if(confirm("Quiz silmek istiyor musunuz")){
-                    axios.delete('http://localhost:3000/api/quiz/' + id
+                    axios.delete(process.env.VUE_APP_ROOT_URL + '/api/quiz/' + id
                     ,{
                         headers: {
                             'Authorization': 'Bearer: ' + this.getToken
@@ -499,7 +499,7 @@ import { mapGetters } from 'vuex'
             },
             deleteQuestion(id){
                 if(confirm("Soruyu silmek istiyor musunuz")){
-                    axios.delete('http://localhost:3000/api/question/' + id
+                    axios.delete(process.env.VUE_APP_ROOT_URL + '/api/question/' + id
                     ,{
                         headers: {
                             'Authorization': 'Bearer: ' + this.getToken
@@ -514,7 +514,7 @@ import { mapGetters } from 'vuex'
             },
             deleteAnswer(id){
                 if(confirm("Cevabı silmek istiyor musunuz")){
-                    axios.delete('http://localhost:3000/api/answer/' + id
+                    axios.delete(process.env.VUE_APP_ROOT_URL + '/api/answer/' + id
                     ,{
                         headers: {
                             'Authorization': 'Bearer: ' + this.getToken
@@ -529,7 +529,7 @@ import { mapGetters } from 'vuex'
             },
             updateAnswer(){
                 if(confirm("Cevabı güncellemek istiyor musunuz")){
-                    axios.put('http://localhost:3000/api/answer/' + this.updateAnswerId,
+                    axios.put(process.env.VUE_APP_ROOT_URL + '/api/answer/' + this.updateAnswerId,
                     {
                         answer: this.updateAnswerContent
                     }
@@ -560,7 +560,7 @@ import { mapGetters } from 'vuex'
             },
             updateQuestion(id){
                 if(confirm("Soruyu güncellemek istiyor musunuz")){
-                    axios.put('http://localhost:3000/api/question/' + id,
+                    axios.put( process.env.VUE_APP_ROOT_URL + '/api/question/' + id,
                     {
                         questionContent : this.updateQuestionContent
                     }
@@ -608,7 +608,7 @@ import { mapGetters } from 'vuex'
                     answers.push({answer:item.answer,correct:0});
                 })
                 if(confirm("Cevabı kayıt etmek istiyor musunuz")){
-                    axios.post('http://localhost:3000/api/answer/' + id,
+                    axios.post(process.env.VUE_APP_ROOT_URL + '/api/answer/' + id,
                     {
                         answers
                     }
@@ -625,7 +625,7 @@ import { mapGetters } from 'vuex'
                 }
             },
             newQuizQuestion(id){
-                axios.post('http://localhost:3000/api/question/' + id,
+                axios.post( process.env.VUE_APP_ROOT_URL + '/api/question/' + id,
                 {
                     questionContent: this.inputs.questions[0].questionContent,
                     correctAnswers:this.inputs.questions[0].correctAnswers,

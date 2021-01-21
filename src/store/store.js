@@ -40,7 +40,7 @@ const store = new Vuex.Store({
       }
     },
     async login({ commit, dispatch }, user) {
-      return await axios.post("http://localhost:3000/api/auth/login",
+      return await axios.post(process.env.VUE_APP_ROOT_URL + "/api/auth/login",
         {
           email: user.email,
           password: user.password
@@ -68,7 +68,7 @@ const store = new Vuex.Store({
       }
     },
     getAllQuiz({ commit }) {
-      return axios.get("http://localhost:3000/api/quiz")
+      return axios.get(process.env.VUE_APP_ROOT_URL + "/api/quiz")
         .then(res => {
           console.log(res.data.quizs);
           commit("setQuiz", res.data.quizs);
@@ -82,7 +82,7 @@ const store = new Vuex.Store({
       }, expiresIn)
     },
     register({ commit, dispatch }, user) {
-      return axios.post("http://localhost:3000/api/auth/register",
+      return axios.post(process.env.VUE_APP_ROOT_URL + "/api/auth/register",
         {
           email: user.email,
           username: user.username,
@@ -99,7 +99,7 @@ const store = new Vuex.Store({
     },
     async submitQuiz({commit} ,[ name, questions ]) {
       console.log(name,questions);
-      return await axios.post('http://localhost:3000/api/quiz',
+      return await axios.post(process.env.VUE_APP_ROOT_URL + '/api/quiz',
         {
           name:name,questions:questions
         },

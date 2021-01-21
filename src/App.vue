@@ -26,6 +26,7 @@ export default {
   },
   created(){
     this.$store.dispatch('initAuth');
+    console.log("Backend: ", process.env.VUE_APP_ROOT_URL)
   }
 };
 </script>
