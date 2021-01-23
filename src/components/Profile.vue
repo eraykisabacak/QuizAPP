@@ -9,8 +9,24 @@
             v-for="(item,index) in myQuiz" 
             :key="index"
         >
-            <v-card-title>Quiz Adı : {{item.name}}</v-card-title>
+            <v-card-title>Quiz Adı : {{item.name}} <v-icon style="margin-left:5px" @click="openQuizSetting(index,item.name)">{{ icons.mdiPencil }}</v-icon></v-card-title>
             <v-card-text>Soru Sayısı : {{item.questions.length}}</v-card-text>
+            <div v-if="openQuizSettingComp == index">
+                <h4>Quiz İsim Güncelleme</h4>
+                <v-form>  
+                    <v-col cols="12" md="12">
+                        <v-text-field 
+                            v-model="updateQuizText"
+                            :rules="[v => !!v || 'Item is required']"
+                            required>
+                        </v-text-field>
+                    </v-col>
+                    <v-col class="text-right" cols="12" md="12">
+                        <v-btn color="green" class="white--text" :disabled="buttonDisabledQuizUpdate" @click="updateQuizName(item._id)">Quiz Güncelle</v-btn>
+                    </v-col>
+                </v-form>
+            </div>
+            
             <v-card-actions>
                 <v-btn
                     outlined
@@ -313,10 +329,22 @@
 <script>
 import axios from 'axios'
 import { mapGetters } from 'vuex'
-
+ import {
+    mdiAccount,
+    mdiPencil,
+    mdiShareVariant,
+    mdiDelete,
+  } from '@mdi/js'
+  
     export default {
         data(){
             return {
+                icons: {
+                    mdiAccount,
+                    mdiPencil,
+                    mdiShareVariant,
+                    mdiDelete,
+                },
                 myQuiz:[],
                 myAnsweredQuiz:[],
                 addQuestionShow:-1,
@@ -333,7 +361,9 @@ import { mapGetters } from 'vuex'
                 correctAnswers : [],
                 incorrectAnswers : [],
                 updateAnswerShowTextComp : -1,
+                openQuizSettingComp:-1,
                 updateAnswerContent:'',
+                updateQuizText:'',
                 inputs: {
                     name: '',
                     questions: [{
@@ -355,6 +385,12 @@ import { mapGetters } from 'vuex'
           buttonDisabledNewQuestion(){
                 if(this.updateQuestionContent == ''){
                     return true;    
+                }
+                return false;
+            },
+            buttonDisabledQuizUpdate(){
+                if(this.updateQuizText == ''){
+                    return true;
                 }
                 return false;
             },
@@ -467,6 +503,7 @@ import { mapGetters } from 'vuex'
                 this.deleteAnswerShowComp = -1;
                 this.updateAnswerShow = -1;
                 this.updateAnswerShowComp = -1;
+                this.openQuizSettingComp = -1;
             },
             openAddQuestion(index){
                 this.defaultReturnState();
@@ -479,6 +516,11 @@ import { mapGetters } from 'vuex'
             openUpdateQuestion(index){
                 this.defaultReturnState();
                 this.updateQuestionShow = index;
+            },
+            openQuizSetting(index,name){
+                this.defaultReturnState();
+                this.openQuizSettingComp = index;
+                this.updateQuizText = name;
             },
             openAddAnswer(index){
                 this.defaultReturnState();
@@ -540,6 +582,24 @@ import { mapGetters } from 'vuex'
                     })
                     .then(() => {
                         alert("Cevap Güncellendi");
+                        this.getMyQuiz();
+                    })
+                    .catch(err => console.log(err));
+                }
+            },
+            updateQuizName(id){
+                if(confirm("Quiz Adını güncellemek istiyor musunuz")){
+                    axios.put(process.env.VUE_APP_ROOT_URL + '/api/quiz/' + id,
+                    {
+                        name: this.updateQuizText
+                    }
+                    ,{
+                        headers: {
+                            'Authorization': 'Bearer: ' + this.getToken
+                        }
+                    })
+                    .then(() => {
+                        alert("Quiz Adı Güncellendi");
                         this.getMyQuiz();
                     })
                     .catch(err => console.log(err));
