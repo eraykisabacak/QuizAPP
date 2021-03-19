@@ -9,7 +9,12 @@
             v-for="(item,index) in myQuiz" 
             :key="index"
         >
-            <v-card-title>Quiz Adı : {{item.name}} <v-icon style="margin-left:5px" @click="openQuizSetting(index,item.name)">{{ icons.mdiPencil }}</v-icon></v-card-title>
+            <v-card-title>Quiz Adı : {{item.name}} 
+                <v-icon style="margin-left:5px" @click="openQuizSetting(index,item.name)">{{ icons.mdiPencil }}</v-icon>
+                <v-spacer></v-spacer>
+                <v-icon @click="openAnsweredUser(index)">{{ answeredUserShow == index ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+            </v-card-title>
+
             <v-card-text>Soru Sayısı : {{item.questions.length}}</v-card-text>
             <div v-if="openQuizSettingComp == index">
                 <h4>Quiz İsim Güncelleme</h4>
@@ -26,6 +31,8 @@
                     </v-col>
                 </v-form>
             </div>
+
+            <answered-users :quizId="item._id" v-if="answeredUserShow == index"></answered-users>
             
             <v-card-actions>
                 <v-btn
@@ -335,8 +342,10 @@ import { mapGetters } from 'vuex'
     mdiShareVariant,
     mdiDelete,
   } from '@mdi/js'
+import AnsweredUsers from './AnsweredUsers.vue'
   
     export default {
+  components: { AnsweredUsers },
         data(){
             return {
                 icons: {
@@ -364,6 +373,7 @@ import { mapGetters } from 'vuex'
                 openQuizSettingComp:-1,
                 updateAnswerContent:'',
                 updateQuizText:'',
+                answeredUserShow : -1,
                 inputs: {
                     name: '',
                     questions: [{
@@ -504,6 +514,7 @@ import { mapGetters } from 'vuex'
                 this.updateAnswerShow = -1;
                 this.updateAnswerShowComp = -1;
                 this.openQuizSettingComp = -1;
+                this.answeredUserShow = -1;
             },
             openAddQuestion(index){
                 this.defaultReturnState();
@@ -538,6 +549,16 @@ import { mapGetters } from 'vuex'
                 this.updateAnswerShowTextComp = index;
                 this.updateAnswerContent = answer;
                 this.updateAnswerId = id;
+            },
+            openAnsweredUser(index){
+                if(this.answeredUserShow == index){
+                    this.defaultReturnState();
+                    this.answeredUserShow = -1
+                }
+                else{
+                    this.defaultReturnState();
+                    this.answeredUserShow = index 
+                }
             },
             deleteQuestion(id){
                 if(confirm("Soruyu silmek istiyor musunuz")){
