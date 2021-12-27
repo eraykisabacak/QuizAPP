@@ -94,7 +94,6 @@ export default {
     },
     created(){
         let vm = this;
-        console.log(this.$route.query.quizId);
 
         axios.get(process.env.VUE_APP_ROOT_URL + '/api/quiz/' + this.$route.query.quizId).then(res => {
             this.questions = res.data.quiz.questions;
@@ -142,15 +141,11 @@ export default {
                     if (questionId in this.userAnswers[i]){
                        // Varsa değiştir
                        status = 0;
-                       console.log("var")
-                       console.log( this.userAnswers);
                        this.userAnswers[i][questionId] = item;
-                       console.log( this.userAnswers);
                     }
                 }
                 if(status){
                     // Dizide yoksa ekle
-                    console.log("yok");
                     let answer = {};
                     answer[questionId] = item;
                     console.log(answer);
@@ -160,7 +155,6 @@ export default {
             else{
                 let answer = {};
                 answer[questionId] = item;
-                console.log(answer);
                 this.userAnswers.push(answer);
             }
         },
@@ -168,17 +162,14 @@ export default {
             if(confirm("Sınavı bitirmek istiyor musunuz?")){
                 let request = {};
                 request["userAnswers"] = this.userAnswers;
-                console.log(request);
                 await axios.post(process.env.VUE_APP_ROOT_URL + '/api/quiz/userAnswer/' + this.$route.query.quizId,{userAnswers:this.userAnswers},{
                     headers: {
                         'Authorization': 'Bearer: ' + this.getToken
                     }
                     })
                     .then(res => {
-                        console.log(res);
                         if(res.data.success){
                             this.questionAndAnswer = res.data.questionAndAnswer;
-                            console.log(res.data.questionAndAnswer);
                             this.question = false;
                             this.correctAnswerCount = res.data.correctCount;
                             this.incorrectAnswerCount = res.data.incorrectCount;

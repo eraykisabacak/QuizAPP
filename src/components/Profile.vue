@@ -662,11 +662,9 @@ import AnsweredUsers from './AnsweredUsers.vue'
                 this.correctAnswers.push({
                     answer:''
                 })
-                console.log(this.correctAnswers)
             },
             removeCorrectAnswer (questionIndex,correctIndex) {
                 this.correctAnswers.splice(correctIndex, 1)
-                console.log(this.correctAnswers)
             },
 
             // InCorrect Answer
@@ -674,11 +672,9 @@ import AnsweredUsers from './AnsweredUsers.vue'
                 this.incorrectAnswers.push({
                     answer:''
                 })
-                console.log(this.incorrectAnswers)
             },
             removeInCorrectAnswer (questionIndex,incorrectIndex) {
                 this.incorrectAnswers.splice(incorrectIndex, 1)
-                console.log(this.incorrectAnswers)
             },
             addAnswer(id){
                 let answers = [];

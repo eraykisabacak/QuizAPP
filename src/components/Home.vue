@@ -57,11 +57,8 @@ export default {
         }).then(res => {
           if(res.data.isJoin){
             if (confirm('Sınava gireceğinizden emin misiniz?')) {
-              console.log('Sınava girdi ' + id);
               this.$router.push({path: 'quiz', query: { quizId: id } });
-            } else {
-              console.log('Sınava girmekten vazgeçti');
-            }
+            } 
           }
           else{
             alert("Zaten bu sınava önceden cevapladınız");

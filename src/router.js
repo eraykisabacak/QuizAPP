@@ -43,7 +43,6 @@ export const router = new VueRouter({
                 if (!localStorage.getItem("token"))
                 {
                     router.push('/');
-                    console.log(localStorage.getItem("token"))    
                 }
                 next();
             }
@@ -56,7 +55,6 @@ export const router = new VueRouter({
                 if (!localStorage.getItem("token") || to.query.quizId == undefined)
                 {
                     router.push('/');
-                    console.log(localStorage.getItem("token"))    
                 }
                 next();
             }
@@ -68,7 +66,6 @@ export const router = new VueRouter({
                 if (!localStorage.getItem("token"))
                 {
                     router.push('/');
-                    console.log(localStorage.getItem("token"))    
                 }
                 next();
             }

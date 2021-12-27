@@ -28,13 +28,11 @@ const store = new Vuex.Store({
       if (token) {
         let expires = localStorage.getItem("expirationDate");
         if (Date.now >= +expires) {
-          console.log("Token Süresi geçmiştir");
           store.dispatch("logout");
         }
         else {
           store.commit("setToken", token);
           let timerSecond = (+expires) - Date.now();
-          console.log("Timer second ", timerSecond);
           this.dispatch("setTimeoutTimer", timerSecond);
         }
       }
@@ -46,7 +44,6 @@ const store = new Vuex.Store({
           password: user.password
         })
         .then(res => {
-          console.log("Login");
           commit("setToken", res.data.access_token);
           localStorage.setItem("token", res.data.access_token); 
           localStorage.setItem("expirationDate",Date.now() + 3600000);
@@ -63,21 +60,17 @@ const store = new Vuex.Store({
       window.localStorage.removeItem('expirationDate');
       
       if (router.history.current.path != '/') {
-        console.log("Çalıştı");
         router.replace('/');
       }
     },
     getAllQuiz({ commit }) {
       return axios.get(process.env.VUE_APP_ROOT_URL + "/api/quiz")
         .then(res => {
-          console.log(res.data.quizs);
           commit("setQuiz", res.data.quizs);
         })
     },
     setTimeoutTimer({ dispatch }, expiresIn) {
-      console.log(expiresIn);
       setTimeout(() => {
-        console.log("logout", expiresIn);
         dispatch("logout");
       }, expiresIn)
     },
@@ -98,7 +91,6 @@ const store = new Vuex.Store({
         .catch(err => console.log(err));
     },
     async submitQuiz({commit} ,[ name, questions ]) {
-      console.log(name,questions);
       return await axios.post(process.env.VUE_APP_ROOT_URL + '/api/quiz',
         {
           name:name,questions:questions

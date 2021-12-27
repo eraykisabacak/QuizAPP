@@ -81,9 +81,7 @@ import { mapGetters } from 'vuex'
                     }
                 }
                 ).then(res => {
-                    console.log(res);
                     this.user.username = res.data.data.username;
-                    console.log(res.data.data.username)
                     this.user.initials = res.data.data.username[0]
                 });
         },

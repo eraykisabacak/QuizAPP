@@ -93,7 +93,6 @@
                         answer: ''
                     }]
                 })
-                console.log(this.inputs)
             },
             removeQuestion (index) {
                 this.inputs.questions.splice(index, 1)
@@ -104,11 +103,9 @@
                 this.inputs.questions[index].correctAnswers.push({
                     answer:''
                 })
-                console.log(this.inputs.questions)
             },
             removeCorrectAnswer (questionIndex,correctIndex) {
                 this.inputs.questions[questionIndex].correctAnswers.splice(correctIndex, 1)
-                console.log(this.inputs.questions)
             },
 
             // InCorrect Answer
@@ -116,14 +113,11 @@
                 this.inputs.questions[index].incorrectAnswers.push({
                     answer:''
                 })
-                console.log(this.inputs.questions)
             },
             removeInCorrectAnswer (questionIndex,incorrectIndex) {
                 this.inputs.questions[questionIndex].incorrectAnswers.splice(incorrectIndex, 1)
-                console.log(this.inputs.questions)
             },
             submitQuiz(){
-                console.log(this.inputs.questions);
                 this.$store.dispatch("submitQuiz",[this.inputs.name,this.inputs.questions]);
             },
         },
