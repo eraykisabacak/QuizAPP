@@ -1,38 +1,48 @@
 <template>
   <div class="main">
-      <div v-if="questions.length > 0 & question">
-        <v-icon
-        large
-        class="before-question"
-        :style="this.selectedQuestion == 0 ? 'display:none': ''"
-        @click="beforeQuestion"
-        >
-        mdi-chevron-left-circle-outline 
-        </v-icon>
-        <v-icon
-        large
-        class="after-question"
-        :style="this.selectedQuestion == (this.questions.length-1) ? 'display:none': ''"
-        @click="afterQuestion"
-        >
-        mdi-chevron-right-circle-outline
-        </v-icon>
-        <div class="header">
-            <div class="questionAmount">
-                Question <span>{{this.selectedQuestion + 1}}</span>/<span class="totalAmount">{{this.questions.length}}</span>
-            </div>
-            <p class="question">{{this.questions[this.selectedQuestion].questionContent}}</p>
+    <div v-if="questions.length > 0 & question" style="display:flex;flex-direction:rows;">
+        <div style="width:36px;margin:50% 0">
+            <span>
+                <v-icon
+                large
+                color="purple accent-2"
+                :disabled="this.selectedQuestion == 0 ? true: false"
+                @click="beforeQuestion"
+                >
+                mdi-chevron-left-circle-outline 
+                </v-icon>
+            </span>
         </div>
-
-        <div class="answers">
-            <div  v-for="(item) in this.answers[this.selectedQuestion]" :key="item._id">
-                <input type="radio" v-model="item.id" class="radio-button" :id="item._id" name="answer" @click="userAnswerClick(item)" /> 
-                <label :for="item._id" class="answer">{{item.answer}}</label>
-            </div>
-        </div>
-
         <div>
-            <span class="endQuiz" :style="userAnswers.length < 1 ? 'display:none' : '' " @click="endQuiz">Sınavı Bitir</span>
+            <div class="header">
+                <div class="questionAmount">
+                    Question <span>{{this.selectedQuestion + 1}}</span>/<span class="totalAmount">{{this.questions.length}}</span>
+                </div>
+                <p class="question">{{this.questions[this.selectedQuestion].questionContent}}</p>
+            </div>
+
+            <div class="answers">
+                <div  v-for="(item) in this.answers[this.selectedQuestion]" :key="item._id">
+                    <input type="radio" v-model="item.id" class="radio-button" :id="item._id" name="answer" @click="userAnswerClick(item)" /> 
+                    <label :for="item._id" class="answer">{{item.answer}}</label>
+                </div>
+            </div>
+
+            <div>
+                <span class="endQuiz" :style="userAnswers.length < 1 ? 'display:none' : '' " @click="endQuiz">Sınavı Bitir</span>
+            </div>
+        </div>
+        <div style="width:36px;margin:50% 0">
+            <span>
+                <v-icon
+                large
+                color="purple accent-2"
+                :disabled="this.selectedQuestion == (this.questions.length-1) ? true: false"
+                @click="afterQuestion"
+                >
+                mdi-chevron-right-circle-outline
+                </v-icon>
+            </span>
         </div>
     </div>
     <div v-else-if="!question">
